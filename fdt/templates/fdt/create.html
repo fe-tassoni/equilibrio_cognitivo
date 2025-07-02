@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block title %}Novo Teste FDT - Equilíbrio Cognitivo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card fade-in">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-plus-circle me-2"></i>Novo Teste FDT
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Seleção de Paciente -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Selecionar Paciente</label>
+                        <select class="form-select" name="paciente" required>
+                            <option value="">Escolha um paciente...</option>
+                            <!-- Opções serão carregadas dinamicamente -->
+                        </select>
+                        <div class="form-text">
+                            Não encontrou o paciente? 
+                            <a href="{% url 'paciente_create' %}" class="text-decoration-none">
+                                Cadastre um novo paciente
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Informações do Teste -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Data do Teste</label>
+                            <input type="date" class="form-control" name="data_teste" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Horário</label>
+                            <input type="time" class="form-control" name="horario_teste">
+                        </div>
+                    </div>
+
+                    <!-- Observações -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Observações</label>
+                        <textarea class="form-control" name="observacoes" rows="3" 
+                                  placeholder="Observações sobre as condições do teste, comportamento do paciente, etc."></textarea>
+                    </div>
+
+                    <!-- Resultados do FDT -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">
+                                <i class="bi bi-stopwatch me-2"></i>Resultados do Five Digits Test
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Leitura -->
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-primary">Leitura</h6>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="form-label">Tempo (segundos)</label>
+                                            <input type="number" class="form-control" name="leitura_tempo" step="0.01">
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label">Erros</label>
+                                            <input type="number" class="form-control" name="leitura_erros" min="0">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Contagem -->
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-primary">Contagem</h6>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="form-label">Tempo (segundos)</label>
+                                            <input type="number" class="form-control" name="contagem_tempo" step="0.01">
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label">Erros</label>
+                                            <input type="number" class="form-control" name="contagem_erros" min="0">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Escolha -->
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-primary">Escolha</h6>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="form-label">Tempo (segundos)</label>
+                                            <input type="number" class="form-control" name="escolha_tempo" step="0.01">
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label">Erros</label>
+                                            <input type="number" class="form-control" name="escolha_erros" min="0">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Alternância -->
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="text-primary">Alternância</h6>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="form-label">Tempo (segundos)</label>
+                                            <input type="number" class="form-control" name="alternancia_tempo" step="0.01">
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label">Erros</label>
+                                            <input type="number" class="form-control" name="alternancia_erros" min="0">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Ação -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'fdt_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-2"></i>Salvar Teste
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Informações sobre o FDT -->
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-info-circle me-2"></i>Sobre o Five Digits Test
+                </h5>
+            </div>
+            <div class="card-body">
+                <p>
+                    O Five Digits Test (FDT) é um teste neuropsicológico que avalia as funções executivas, 
+                    especificamente a velocidade de processamento, atenção seletiva e flexibilidade cognitiva.
+                </p>
+                <h6>Fases do teste:</h6>
+                <ul>
+                    <li><strong>Leitura:</strong> Leitura de números de 1 a 5</li>
+                    <li><strong>Contagem:</strong> Contagem de grupos de asteriscos</li>
+                    <li><strong>Escolha:</strong> Contagem de números ignorando a quantidade</li>
+                    <li><strong>Alternância:</strong> Alternância entre contagem e leitura</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-calculate derived scores
+    const timeInputs = document.querySelectorAll('input[name$="_tempo"]');
+    const errorInputs = document.querySelectorAll('input[name$="_erros"]');
+    
+    // Set default date to today
+    const dateInput = document.querySelector('input[name="data_teste"]');
+    if (dateInput) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+    }
+    
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Salvando...';
+        submitBtn.disabled = true;
+    });
+    
+    // Add input validation
+    timeInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            if (this.value < 0) {
+                this.value = 0;
+            }
+        });
+    });
+    
+    errorInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            if (this.value < 0) {
+                this.value = 0;
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
+

@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block title %}Meus Pacientes - Equilíbrio Cognitivo{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-white fw-bold">
+                <i class="bi bi-people me-2"></i>Meus Pacientes
+            </h2>
+            <a href="{% url 'paciente_create' %}" class="btn btn-success">
+                <i class="bi bi-person-plus me-2"></i>Novo Paciente
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-light">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h5 class="mb-0">
+                            <i class="bi bi-list me-2"></i>Lista de Pacientes
+                        </h5>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Buscar paciente..." id="searchInput">
+                            <button class="btn btn-outline-secondary" type="button">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if pacientes %}
+                    <div class="row" id="pacientesGrid">
+                        {% for paciente in pacientes %}
+                        <div class="col-md-6 col-lg-4 mb-4 paciente-card">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bg-success rounded-circle p-3 me-3">
+                                            <i class="bi bi-person text-white fs-4"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1 fw-bold">{{ paciente.nome_completo }}</h6>
+                                            <small class="text-muted">
+                                                {{ paciente.data_nascimento|timesince }} de idade
+                                            </small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <small class="text-muted d-block">
+                                            <i class="bi bi-calendar me-1"></i>
+                                            Nascimento: {{ paciente.data_nascimento|date:"d/m/Y" }}
+                                        </small>
+                                        <small class="text-muted d-block">
+                                            <i class="bi bi-mortarboard me-1"></i>
+                                            Escolaridade: {{ paciente.escolaridade }}
+                                        </small>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{% url 'paciente_detail' paciente.pk %}" 
+                                               class="btn btn-outline-primary" title="Ver detalhes">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{% url 'paciente_edit' paciente.pk %}" 
+                                               class="btn btn-outline-warning" title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        </div>
+                                        <a href="{% url 'fdt_create' %}?paciente={{ paciente.pk }}" 
+                                           class="btn btn-primary btn-sm">
+                                            <i class="bi bi-plus me-1"></i>Novo Teste
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-people display-1 text-muted"></i>
+                        <h4 class="text-muted mt-3">Nenhum paciente cadastrado</h4>
+                        <p class="text-muted mb-4">
+                            Você ainda não cadastrou nenhum paciente. Comece adicionando seu primeiro paciente.
+                        </p>
+                        <a href="{% url 'paciente_create' %}" class="btn btn-success">
+                            <i class="bi bi-person-plus me-2"></i>Cadastrar Primeiro Paciente
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        {% if pacientes %}
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h4 class="text-success">{{ pacientes|length }}</h4>
+                        <p class="text-muted mb-0">Total de Pacientes</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h4 class="text-primary">0</h4>
+                        <p class="text-muted mb-0">Testes Realizados</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h4 class="text-warning">0</h4>
+                        <p class="text-muted mb-0">Este Mês</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h4 class="text-info">0</h4>
+                        <p class="text-muted mb-0">Relatórios</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    const pacienteCards = document.querySelectorAll('.paciente-card');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            pacienteCards.forEach(card => {
+                const patientName = card.querySelector('h6').textContent.toLowerCase();
+                const escolaridade = card.querySelector('.text-muted').textContent.toLowerCase();
+                
+                if (patientName.includes(searchTerm) || escolaridade.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    }
+    
+    // Add hover effects to cards
+    pacienteCards.forEach(card => {
+        const cardElement = card.querySelector('.card');
+        
+        cardElement.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+            this.style.transition = 'all 0.3s ease';
+        });
+        
+        cardElement.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+});
+</script>
+{% endblock %}
+

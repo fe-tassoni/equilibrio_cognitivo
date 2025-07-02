@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+
+{% block title %}Novo Paciente - Equilíbrio Cognitivo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card fade-in">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-person-plus me-2"></i>Cadastrar Novo Paciente
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Dados Pessoais -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">
+                                <i class="bi bi-person me-2"></i>Dados Pessoais
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Nome Completo *</label>
+                                <input type="text" class="form-control" name="nome_completo" 
+                                       placeholder="Digite o nome completo do paciente" required>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Data de Nascimento *</label>
+                                    <input type="date" class="form-control" name="data_nascimento" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Idade</label>
+                                    <input type="text" class="form-control" id="idade" readonly 
+                                           placeholder="Calculada automaticamente">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Sexo</label>
+                                    <select class="form-select" name="sexo">
+                                        <option value="">Selecione...</option>
+                                        <option value="M">Masculino</option>
+                                        <option value="F">Feminino</option>
+                                        <option value="O">Outro</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Estado Civil</label>
+                                    <select class="form-select" name="estado_civil">
+                                        <option value="">Selecione...</option>
+                                        <option value="solteiro">Solteiro(a)</option>
+                                        <option value="casado">Casado(a)</option>
+                                        <option value="divorciado">Divorciado(a)</option>
+                                        <option value="viuvo">Viúvo(a)</option>
+                                        <option value="uniao_estavel">União Estável</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dados Educacionais -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">
+                                <i class="bi bi-mortarboard me-2"></i>Dados Educacionais
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Escolaridade *</label>
+                                <select class="form-select" name="escolaridade" required>
+                                    <option value="">Selecione o nível de escolaridade...</option>
+                                    <option value="Analfabeto">Analfabeto</option>
+                                    <option value="Fundamental Incompleto">Ensino Fundamental Incompleto</option>
+                                    <option value="Fundamental Completo">Ensino Fundamental Completo</option>
+                                    <option value="Médio Incompleto">Ensino Médio Incompleto</option>
+                                    <option value="Médio Completo">Ensino Médio Completo</option>
+                                    <option value="Superior Incompleto">Ensino Superior Incompleto</option>
+                                    <option value="Superior Completo">Ensino Superior Completo</option>
+                                    <option value="Pós-graduação">Pós-graduação</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Profissão</label>
+                                <input type="text" class="form-control" name="profissao" 
+                                       placeholder="Profissão ou ocupação atual">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dados de Contato -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">
+                                <i class="bi bi-telephone me-2"></i>Dados de Contato
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Telefone</label>
+                                    <input type="tel" class="form-control" name="telefone" 
+                                           placeholder="(11) 99999-9999">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">E-mail</label>
+                                    <input type="email" class="form-control" name="email" 
+                                           placeholder="email@exemplo.com">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Endereço</label>
+                                <textarea class="form-control" name="endereco" rows="2" 
+                                          placeholder="Endereço completo (opcional)"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Observações -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">
+                                <i class="bi bi-chat-text me-2"></i>Observações Clínicas
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Observações</label>
+                                <textarea class="form-control" name="observacoes" rows="4" 
+                                          placeholder="Informações relevantes sobre o paciente, histórico clínico, medicações, etc."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Ação -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'paciente_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle me-2"></i>Cadastrar Paciente
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Informações sobre LGPD -->
+        <div class="card mt-4 border-info">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-shield-check me-2"></i>Proteção de Dados
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-0">
+                    <strong>Importante:</strong> Todos os dados dos pacientes são protegidos conforme a LGPD. 
+                    As informações são criptografadas e acessíveis apenas por você. 
+                    Mantenha sempre a confidencialidade dos dados de seus pacientes.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Calculate age automatically
+    const birthDateInput = document.querySelector('input[name="data_nascimento"]');
+    const ageInput = document.getElementById('idade');
+    
+    if (birthDateInput && ageInput) {
+        birthDateInput.addEventListener('change', function() {
+            const birthDate = new Date(this.value);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            if (age >= 0 && age <= 150) {
+                ageInput.value = age + ' anos';
+            } else {
+                ageInput.value = '';
+            }
+        });
+    }
+    
+    // Phone mask
+    const phoneInput = document.querySelector('input[name="telefone"]');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+            let value = this.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                if (value.length < 14) {
+                    value = value.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+                }
+                this.value = value;
+            }
+        });
+    }
+    
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Cadastrando...';
+        submitBtn.disabled = true;
+    });
+    
+    // Required field validation
+    const requiredFields = form.querySelectorAll('[required]');
+    requiredFields.forEach(field => {
+        field.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                this.classList.add('is-invalid');
+            } else {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
+

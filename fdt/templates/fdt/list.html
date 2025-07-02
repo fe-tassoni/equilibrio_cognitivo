@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}Meus Testes FDT - Equilíbrio Cognitivo{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-white fw-bold">
+                <i class="bi bi-clipboard-data me-2"></i>Meus Testes FDT
+            </h2>
+            <a href="{% url 'fdt_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus me-2"></i>Novo Teste
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-light">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h5 class="mb-0">
+                            <i class="bi bi-list me-2"></i>Lista de Testes
+                        </h5>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Buscar por paciente...">
+                            <button class="btn btn-outline-secondary" type="button">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if testes %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Paciente</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th>Pontuação</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for teste in testes %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary rounded-circle p-2 me-3">
+                                                <i class="bi bi-person text-white"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">{{ teste.paciente.nome_completo }}</h6>
+                                                <small class="text-muted">{{ teste.paciente.idade }} anos</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ teste.data_criacao|date:"d/m/Y H:i" }}</td>
+                                    <td>
+                                        <span class="badge bg-success">Concluído</span>
+                                    </td>
+                                    <td>
+                                        <strong>{{ teste.pontuacao_total }}</strong>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{% url 'fdt_detail' teste.pk %}" class="btn btn-outline-primary">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{% url 'fdt_report' teste.pk %}" class="btn btn-outline-success">
+                                                <i class="bi bi-file-earmark-pdf"></i>
+                                            </a>
+                                            <a href="{% url 'fdt_edit' teste.pk %}" class="btn btn-outline-warning">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-clipboard-x display-1 text-muted"></i>
+                        <h4 class="text-muted mt-3">Nenhum teste encontrado</h4>
+                        <p class="text-muted mb-4">
+                            Você ainda não criou nenhum teste FDT. Comece criando seu primeiro teste.
+                        </p>
+                        <a href="{% url 'fdt_create' %}" class="btn btn-primary">
+                            <i class="bi bi-plus me-2"></i>Criar Primeiro Teste
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h4 class="text-primary">{{ testes|length }}</h4>
+                        <p class="text-muted mb-0">Total de Testes</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h4 class="text-success">0</h4>
+                        <p class="text-muted mb-0">Este Mês</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h4 class="text-warning">0</h4>
+                        <p class="text-muted mb-0">Pendentes</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h4 class="text-info">0</h4>
+                        <p class="text-muted mb-0">Relatórios</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add search functionality
+    const searchInput = document.querySelector('input[placeholder="Buscar por paciente..."]');
+    const tableRows = document.querySelectorAll('tbody tr');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            tableRows.forEach(row => {
+                const patientName = row.querySelector('h6').textContent.toLowerCase();
+                if (patientName.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    }
+});
+</script>
+{% endblock %}
+
