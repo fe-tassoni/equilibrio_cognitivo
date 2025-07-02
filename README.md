@@ -1,1 +1,0 @@
-# equilibrio_cognitivo
