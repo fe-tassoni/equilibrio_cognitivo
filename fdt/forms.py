@@ -57,6 +57,27 @@ class ResultadoFDTForm(forms.ModelForm):
             'erro_alternancia': forms.NumberInput(attrs={'class': 'form-control form-control-sm text-center'}),
             'tempo_inibicao': forms.NumberInput(attrs={'class': 'form-control form-control-sm text-center'}),
             'tempo_flexibilidade': forms.NumberInput(attrs={'class': 'form-control form-control-sm text-center'}),
+            # Oculta todos os campos *_pc e *_class
+            'tempo_leitura_pc': forms.HiddenInput(),
+            'tempo_leitura_class': forms.HiddenInput(),
+            'tempo_contagem_pc': forms.HiddenInput(),
+            'tempo_contagem_class': forms.HiddenInput(),
+            'tempo_escolha_pc': forms.HiddenInput(),
+            'tempo_escolha_class': forms.HiddenInput(),
+            'tempo_alternancia_pc': forms.HiddenInput(),
+            'tempo_alternancia_class': forms.HiddenInput(),
+            'tempo_inibicao_pc': forms.HiddenInput(),
+            'tempo_inibicao_class': forms.HiddenInput(),
+            'tempo_flexibilidade_pc': forms.HiddenInput(),
+            'tempo_flexibilidade_class': forms.HiddenInput(),
+            'erro_leitura_pc': forms.HiddenInput(),
+            'erro_leitura_class': forms.HiddenInput(),
+            'erro_contagem_pc': forms.HiddenInput(),
+            'erro_contagem_class': forms.HiddenInput(),
+            'erro_escolha_pc': forms.HiddenInput(),
+            'erro_escolha_class': forms.HiddenInput(),
+            'erro_alternancia_pc': forms.HiddenInput(),
+            'erro_alternancia_class': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):

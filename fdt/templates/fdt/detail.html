@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Visualizar Resultado FDT{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card fade-in">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-eye me-2"></i>Visualizar Resultado FDT</h4>
+            </div>
+            <div class="card-body p-4">
+                <div class="row mb-3">
+                    <div class="col-md-8"><strong>Paciente:</strong> {{ resultado.id_paciente }}</div>
+                    <div class="col-md-4"><strong>Data:</strong> {{ resultado.data_resultado|date:'d/m/Y' }}</div>
+                </div>
+                <h5 class="mb-3 fw-normal">Processos Automáticos e Controlados</h5>
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Etapa</th>
+                                <th>Tempo (s)</th>
+                                <th>Percentil</th>
+                                <th>Classificação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Leitura</td>
+                                <td>{{ resultado.tempo_leitura }}</td>
+                                <td>{{ resultado.tempo_leitura_pc }}</td>
+                                <td>{{ resultado.tempo_leitura_class }}</td>
+                            </tr>
+                            <tr>
+                                <td>Contagem</td>
+                                <td>{{ resultado.tempo_contagem }}</td>
+                                <td>{{ resultado.tempo_contagem_pc }}</td>
+                                <td>{{ resultado.tempo_contagem_class }}</td>
+                            </tr>
+                            <tr>
+                                <td>Escolha</td>
+                                <td>{{ resultado.tempo_escolha }}</td>
+                                <td>{{ resultado.tempo_escolha_pc }}</td>
+                                <td>{{ resultado.tempo_escolha_class }}</td>
+                            </tr>
+                            <tr>
+                                <td>Alternância</td>
+                                <td>{{ resultado.tempo_alternancia }}</td>
+                                <td>{{ resultado.tempo_alternancia_pc }}</td>
+                                <td>{{ resultado.tempo_alternancia_class }}</td>
+                            </tr>
+                            <tr>
+                                <td>Inibição</td>
+                                <td>{{ resultado.tempo_inibicao }}</td>
+                                <td>{{ resultado.tempo_inibicao_pc }}</td>
+                                <td>{{ resultado.tempo_inibicao_class }}</td>
+                            </tr>
+                            <tr>
+                                <td>Flexibilidade</td>
+                                <td>{{ resultado.tempo_flexibilidade }}</td>
+                                <td>{{ resultado.tempo_flexibilidade_pc }}</td>
+                                <td>{{ resultado.tempo_flexibilidade_class }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h5 class="mb-3 fw-normal">Contagem de Erros</h5>
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Etapa</th>
+                                <th>Erros</th>
+                                <th>Percentil</th>
+                                <th>Classificação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Leitura</td>
+                                <td>{{ resultado.erro_leitura }}</td>
+                                <td>{{ resultado.erro_leitura_pc }}</td>
+                                <td>{{ resultado.erro_leitura_class }}</td>
+                            </tr>
+                            <tr>
+                                <td>Contagem</td>
+                                <td>{{ resultado.erro_contagem }}</td>
+                                <td>{{ resultado.erro_contagem_pc }}</td>
+                                <td>{{ resultado.erro_contagem_class }}</td>
+                            </tr>
+                            <tr>
+                                <td>Escolha</td>
+                                <td>{{ resultado.erro_escolha }}</td>
+                                <td>{{ resultado.erro_escolha_pc }}</td>
+                                <td>{{ resultado.erro_escolha_class }}</td>
+                            </tr>
+                            <tr>
+                                <td>Alternância</td>
+                                <td>{{ resultado.erro_alternancia }}</td>
+                                <td>{{ resultado.erro_alternancia_pc }}</td>
+                                <td>{{ resultado.erro_alternancia_class }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Voltar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

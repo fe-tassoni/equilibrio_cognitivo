@@ -58,6 +58,18 @@
                                     <td><span id="alternancia_tempo_pc" class="text-muted fst-italic"></span></td>
                                     <td><span id="alternancia_tempo_class" class="text-muted fst-italic"></span></td>
                                 </tr>
+                                <tr>
+                                    <td>Inibição</td>
+                                    <td>{{ form.tempo_inibicao }}</td>
+                                    <td><span id="inibicao_tempo_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="inibicao_tempo_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Flexibilidade</td>
+                                    <td>{{ form.tempo_flexibilidade }}</td>
+                                    <td><span id="flexibilidade_tempo_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="flexibilidade_tempo_class" class="text-muted fst-italic"></span></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -122,9 +134,35 @@
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Seu JavaScript existente para validação e preenchimento da data pode ser mantido.
-    // O próximo passo será adicionar aqui a lógica para, ao digitar um valor,
-    // calcular e preencher os campos de Percentil e Classificação (os <span>).
+    function updateIndicesDerivados() {
+        // Pega os campos de tempo
+        const leitura = parseFloat(document.getElementById('id_tempo_leitura')?.value.replace(',', '.') || '');
+        const escolha = parseFloat(document.getElementById('id_tempo_escolha')?.value.replace(',', '.') || '');
+        const alternancia = parseFloat(document.getElementById('id_tempo_alternancia')?.value.replace(',', '.') || '');
+
+        // Calcula os índices derivados se os valores forem válidos
+        if (!isNaN(leitura) && !isNaN(escolha)) {
+            const inibicao = escolha - leitura;
+            const inibicaoField = document.getElementById('id_tempo_inibicao');
+            if (inibicaoField) inibicaoField.value = inibicao.toFixed(2);
+        }
+        if (!isNaN(leitura) && !isNaN(alternancia)) {
+            const flexibilidade = alternancia - leitura;
+            const flexibilidadeField = document.getElementById('id_tempo_flexibilidade');
+            if (flexibilidadeField) flexibilidadeField.value = flexibilidade.toFixed(2);
+        }
+    }
+
+    // Adiciona listeners aos campos relevantes
+    ['id_tempo_leitura', 'id_tempo_escolha', 'id_tempo_alternancia'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', updateIndicesDerivados);
+        }
+    });
+
+    // Atualiza ao carregar a página (caso já tenha valores)
+    updateIndicesDerivados();
 });
 </script>
 {% endblock %}
