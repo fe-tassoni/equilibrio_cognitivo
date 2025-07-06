@@ -175,11 +175,11 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Calculate age automatically
-    const birthDateInput = document.querySelector('input[name="data_nascimento"]');
-    const ageInput = document.getElementById('idade');
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Calculate age automatically
+      const birthDateInput = document.querySelector('input[name="data_nascimento"]')
+      const ageInput = document.getElementById('id_idade')
     
     if (birthDateInput && ageInput) {
         birthDateInput.addEventListener('change', function() {
