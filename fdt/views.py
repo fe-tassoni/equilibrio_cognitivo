@@ -1,67 +1,29 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import HttpResponse
-from .models import CorrecaoFDT
+from .forms import ResultadoFDTForm
 
 @login_required
-def fdt_list(request):
-    """Lista todos os testes FDT do usuário"""
-    # Por enquanto, apenas uma página placeholder
-    context = {
-        'testes': [],  # Será implementado quando tivermos o modelo de teste
-    }
-    return render(request, 'fdt/list.html', context)
+def resultado_fdt_create(request):
+    # Passamos o usuário logado para o formulário, para que ele possa filtrar os pacientes.
+    form = ResultadoFDTForm(request.POST or None, user=request.user)
 
-@login_required
-def fdt_create(request):
-    """Cria um novo teste FDT"""
     if request.method == 'POST':
-        # Implementar lógica de criação
-        messages.success(request, 'Teste FDT criado com sucesso!')
-        return redirect('fdt_list')
-    
-    return render(request, 'fdt/create.html')
+        if form.is_valid():
+            resultado = form.save(commit=False)
+            # O psicólogo já é o usuário logado, definido no formulário.
+            resultado.psicologo = request.user
+            
+            # AQUI: Adicionar a lógica para calcular os campos de percentil e classificação
+            # Exemplo: resultado.tempo_leitura_pc = calcular_percentil(...)
+            
+            resultado.save()
+            messages.success(request, 'Resultado FDT cadastrado com sucesso!')
+            return redirect('home')
+        else:
+            messages.error(request, 'Erro ao cadastrar. Por favor, verifique os campos destacados.')
 
-@login_required
-def fdt_detail(request, pk):
-    """Exibe detalhes de um teste FDT específico"""
-    # teste = get_object_or_404(TesteFDT, pk=pk, usuario=request.user)
     context = {
-        'teste_id': pk,
+        'form': form,
     }
-    return render(request, 'fdt/detail.html', context)
-
-@login_required
-def fdt_edit(request, pk):
-    """Edita um teste FDT existente"""
-    if request.method == 'POST':
-        messages.success(request, 'Teste FDT atualizado com sucesso!')
-        return redirect('fdt_detail', pk=pk)
-    
-    context = {
-        'teste_id': pk,
-    }
-    return render(request, 'fdt/edit.html', context)
-
-@login_required
-def fdt_delete(request, pk):
-    """Deleta um teste FDT"""
-    if request.method == 'POST':
-        # Implementar lógica de deleção
-        messages.success(request, 'Teste FDT deletado com sucesso!')
-        return redirect('fdt_list')
-    
-    context = {
-        'teste_id': pk,
-    }
-    return render(request, 'fdt/delete.html', context)
-
-@login_required
-def fdt_report(request, pk):
-    """Gera relatório de um teste FDT"""
-    context = {
-        'teste_id': pk,
-    }
-    return render(request, 'fdt/report.html', context)
-
+    return render(request, 'fdt/create.html', context)

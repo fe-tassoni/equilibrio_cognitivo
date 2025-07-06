@@ -1,8 +1,7 @@
 from django.contrib import admin
-from .models import CorrecaoFDT
+from .models import FdtResultados
 
 
-@admin.register(CorrecaoFDT)
-class CorrecaoFDTAdmin(admin.ModelAdmin):
-    list_display = ['id', 'tipo', 'fase', 'faixa_etaria_min', 'faixa_etaria_max']
-    ordering = ['tipo', 'fase', 'faixa_etaria_min']
+@admin.register(FdtResultados)
+class FdtResultadosAdmin(admin.ModelAdmin):
+	pass

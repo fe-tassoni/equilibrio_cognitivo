@@ -1,158 +1,118 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
-{% block title %}Novo Teste FDT - Equilíbrio Cognitivo{% endblock %}
+{% block title %}Novo Resultado FDT - Equilíbrio Cognitivo{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-lg-8">
+    <div class="col-lg-10"> <!-- Aumentei a largura para a tabela caber confortavelmente -->
         <div class="card fade-in">
             <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">
-                    <i class="bi bi-plus-circle me-2"></i>Novo Teste FDT
-                </h4>
+                <h4 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>Novo Resultado FDT</h4>
             </div>
             <div class="card-body p-4">
                 <form method="post" novalidate>
                     {% csrf_token %}
-                    
-                    <!-- Seleção de Paciente -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">Selecionar Paciente</label>
-                        <select class="form-select" name="paciente" required>
-                            <option value="">Escolha um paciente...</option>
-                            <!-- Opções serão carregadas dinamicamente -->
-                        </select>
-                        <div class="form-text">
-                            Não encontrou o paciente? 
-                            <a href="{% url 'paciente_create' %}" class="text-decoration-none">
-                                Cadastre um novo paciente
-                            </a>
-                        </div>
+
+                    <!-- CAMPOS GERAIS -->
+                    <div class="row mb-3">
+                        <div class="col-md-8">{{ form.paciente|as_crispy_field }}</div>
+                        <div class="col-md-4">{{ form.data_resultado|as_crispy_field }}</div>
+                    </div>
+                    <!-- TABELAS DE RESULTADOS -->
+
+                    <!-- Processos Automáticos e Controlados (Tempo) -->
+                    <h5 class="mb-3 fw-normal">Processos Automáticos e Controlados</h5>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 25%;">Etapa</th>
+                                    <th style="width: 25%;">Tempo (s)</th>
+                                    <th style="width: 25%;">Percentil</th>
+                                    <th style="width: 25%;">Classificação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Leitura</td>
+                                    <td>{{ form.tempo_leitura }}</td>
+                                    <td><span id="leitura_tempo_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="leitura_tempo_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Contagem</td>
+                                    <td>{{ form.tempo_contagem }}</td>
+                                    <td><span id="contagem_tempo_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="contagem_tempo_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Escolha</td>
+                                    <td>{{ form.tempo_escolha }}</td>
+                                    <td><span id="escolha_tempo_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="escolha_tempo_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Alternância</td>
+                                    <td>{{ form.tempo_alternancia }}</td>
+                                    <td><span id="alternancia_tempo_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="alternancia_tempo_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
 
-                    <!-- Informações do Teste -->
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Data do Teste</label>
-                            <input type="date" class="form-control" name="data_teste" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Horário</label>
-                            <input type="time" class="form-control" name="horario_teste">
-                        </div>
-                    </div>
-
-                    <!-- Observações -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">Observações</label>
-                        <textarea class="form-control" name="observacoes" rows="3" 
-                                  placeholder="Observações sobre as condições do teste, comportamento do paciente, etc."></textarea>
-                    </div>
-
-                    <!-- Resultados do FDT -->
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h5 class="mb-0">
-                                <i class="bi bi-stopwatch me-2"></i>Resultados do Five Digits Test
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <!-- Leitura -->
-                                <div class="col-md-6 mb-3">
-                                    <h6 class="text-primary">Leitura</h6>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <label class="form-label">Tempo (segundos)</label>
-                                            <input type="number" class="form-control" name="leitura_tempo" step="0.01">
-                                        </div>
-                                        <div class="col-6">
-                                            <label class="form-label">Erros</label>
-                                            <input type="number" class="form-control" name="leitura_erros" min="0">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Contagem -->
-                                <div class="col-md-6 mb-3">
-                                    <h6 class="text-primary">Contagem</h6>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <label class="form-label">Tempo (segundos)</label>
-                                            <input type="number" class="form-control" name="contagem_tempo" step="0.01">
-                                        </div>
-                                        <div class="col-6">
-                                            <label class="form-label">Erros</label>
-                                            <input type="number" class="form-control" name="contagem_erros" min="0">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Escolha -->
-                                <div class="col-md-6 mb-3">
-                                    <h6 class="text-primary">Escolha</h6>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <label class="form-label">Tempo (segundos)</label>
-                                            <input type="number" class="form-control" name="escolha_tempo" step="0.01">
-                                        </div>
-                                        <div class="col-6">
-                                            <label class="form-label">Erros</label>
-                                            <input type="number" class="form-control" name="escolha_erros" min="0">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Alternância -->
-                                <div class="col-md-6 mb-3">
-                                    <h6 class="text-primary">Alternância</h6>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <label class="form-label">Tempo (segundos)</label>
-                                            <input type="number" class="form-control" name="alternancia_tempo" step="0.01">
-                                        </div>
-                                        <div class="col-6">
-                                            <label class="form-label">Erros</label>
-                                            <input type="number" class="form-control" name="alternancia_erros" min="0">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Contagem de Erros -->
+                    <h5 class="mb-3 fw-normal">Contagem de Erros</h5>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 25%;">Etapa</th>
+                                    <th style="width: 25%;">Erros</th>
+                                    <th style="width: 25%;">Percentil</th>
+                                    <th style="width: 25%;">Classificação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Leitura</td>
+                                    <td>{{ form.erro_leitura }}</td>
+                                    <td><span id="leitura_erro_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="leitura_erro_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Contagem</td>
+                                    <td>{{ form.erro_contagem }}</td>
+                                    <td><span id="contagem_erro_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="contagem_erro_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Escolha</td>
+                                    <td>{{ form.erro_escolha }}</td>
+                                    <td><span id="escolha_erro_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="escolha_erro_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Alternância</td>
+                                    <td>{{ form.erro_alternancia }}</td>
+                                    <td><span id="alternancia_erro_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="alternancia_erro_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
 
                     <!-- Botões de Ação -->
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a href="{% url 'fdt_list' %}" class="btn btn-outline-secondary">
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
                             <i class="bi bi-x-circle me-2"></i>Cancelar
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-circle me-2"></i>Salvar Teste
+                            <i class="bi bi-check-circle me-2"></i>Salvar Resultado
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
-
-        <!-- Informações sobre o FDT -->
-        <div class="card mt-4">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">
-                    <i class="bi bi-info-circle me-2"></i>Sobre o Five Digits Test
-                </h5>
-            </div>
-            <div class="card-body">
-                <p>
-                    O Five Digits Test (FDT) é um teste neuropsicológico que avalia as funções executivas, 
-                    especificamente a velocidade de processamento, atenção seletiva e flexibilidade cognitiva.
-                </p>
-                <h6>Fases do teste:</h6>
-                <ul>
-                    <li><strong>Leitura:</strong> Leitura de números de 1 a 5</li>
-                    <li><strong>Contagem:</strong> Contagem de grupos de asteriscos</li>
-                    <li><strong>Escolha:</strong> Contagem de números ignorando a quantidade</li>
-                    <li><strong>Alternância:</strong> Alternância entre contagem e leitura</li>
-                </ul>
             </div>
         </div>
     </div>
@@ -162,41 +122,9 @@
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Auto-calculate derived scores
-    const timeInputs = document.querySelectorAll('input[name$="_tempo"]');
-    const errorInputs = document.querySelectorAll('input[name$="_erros"]');
-    
-    // Set default date to today
-    const dateInput = document.querySelector('input[name="data_teste"]');
-    if (dateInput) {
-        dateInput.value = new Date().toISOString().split('T')[0];
-    }
-    
-    // Form validation
-    const form = document.querySelector('form');
-    form.addEventListener('submit', function(e) {
-        const submitBtn = form.querySelector('button[type="submit"]');
-        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Salvando...';
-        submitBtn.disabled = true;
-    });
-    
-    // Add input validation
-    timeInputs.forEach(input => {
-        input.addEventListener('input', function() {
-            if (this.value < 0) {
-                this.value = 0;
-            }
-        });
-    });
-    
-    errorInputs.forEach(input => {
-        input.addEventListener('input', function() {
-            if (this.value < 0) {
-                this.value = 0;
-            }
-        });
-    });
+    // Seu JavaScript existente para validação e preenchimento da data pode ser mantido.
+    // O próximo passo será adicionar aqui a lógica para, ao digitar um valor,
+    // calcular e preencher os campos de Percentil e Classificação (os <span>).
 });
 </script>
 {% endblock %}
-

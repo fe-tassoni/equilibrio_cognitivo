@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Paciente
+from .forms import PacienteForm # <-- Adicione esta linha
 
 @login_required
 def paciente_list(request):
@@ -16,11 +17,23 @@ def paciente_list(request):
 def paciente_create(request):
     """Cria um novo paciente"""
     if request.method == 'POST':
-        # Implementar lógica de criação com formulário
-        messages.success(request, 'Paciente cadastrado com sucesso!')
-        return redirect('paciente_list')
+        form = PacienteForm(request.POST) # <-- Instancia o formulário com os dados da requisição
+        if form.is_valid(): # <-- Valida o formulário
+            paciente = form.save(commit=False) # <-- Cria o objeto, mas não salva ainda
+            paciente.psicologo = request.user # <-- Associa o psicólogo logado
+            paciente.save() # <-- Salva o paciente no banco de dados
+            messages.success(request, 'Paciente cadastrado com sucesso!')
+            return redirect('paciente_list')
+        else:
+            # Se o formulário não for válido, renderiza o template novamente com os erros
+            messages.error(request, 'Erro ao cadastrar paciente. Verifique os campos.')
+    else:
+        form = PacienteForm() # <-- Instancia um formulário vazio para requisições GET
     
-    return render(request, 'pacientes/create.html')
+    context = {
+        'form': form # <-- Passa o formulário para o template
+    }
+    return render(request, 'pacientes/create.html', context)
 
 @login_required
 def paciente_detail(request, pk):
@@ -60,4 +73,5 @@ def paciente_delete(request, pk):
         'paciente': paciente,
     }
     return render(request, 'pacientes/delete.html', context)
+
 
