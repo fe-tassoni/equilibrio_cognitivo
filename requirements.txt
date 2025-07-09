@@ -1,0 +1,11 @@
+Django>=5.2.3
+psycopg2-binary>=2.9
+django-allauth>=0.62.0
+django-guardian>=2.4.0
+django-crispy-forms>=2.1
+crispy-bootstrap5>=0.7
+django-widget-tweaks>=1.4
+python-decouple>=3.8
+django-grappelli>=3.0
+cryptography>=42.0.5
+
