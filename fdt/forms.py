@@ -19,7 +19,7 @@ class ResultadoFDTForm(forms.ModelForm):
         # Estes são os campos que o Django tentará salvar no modelo.
         # Note que 'paciente' (o campo customizado) não está aqui.
         fields = [
-            'data_resultado',
+            # 'data_resultado',
             'tempo_leitura', 'erro_leitura',
             'tempo_contagem', 'erro_contagem',
             'tempo_escolha', 'erro_escolha',
@@ -31,7 +31,7 @@ class ResultadoFDTForm(forms.ModelForm):
         # 3. LABELS CORRETOS
         # Apenas para os campos que precisam de um label visível.
         labels = {
-            'data_resultado': 'Data de Aplicação do Teste',
+            # 'data_resultado': 'Data de Aplicação do Teste',
             # Labels para os campos da tabela são vazios, pois o cabeçalho da tabela já os descreve.
             'tempo_leitura': '', 'erro_leitura': '',
             'tempo_contagem': '', 'erro_contagem': '',
@@ -44,7 +44,7 @@ class ResultadoFDTForm(forms.ModelForm):
         # 4. WIDGETS CORRETOS
         # Widgets para estilizar os campos do formulário.
         widgets = {
-            'data_resultado': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            # 'data_resultado': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             
             # Inputs para as tabelas (menores e centralizados)
             'tempo_leitura': forms.NumberInput(attrs={'class': 'form-control form-control-sm text-center'}),

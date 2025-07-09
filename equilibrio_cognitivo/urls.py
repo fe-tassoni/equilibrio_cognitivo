@@ -34,6 +34,8 @@ urlpatterns = [
     path('privacidade/', TemplateView.as_view(template_name='pages/privacy.html'), name='privacy'),
     path('sobre/', TemplateView.as_view(template_name='pages/about.html'), name='about'),
     path('contato/', TemplateView.as_view(template_name='pages/contact.html'), name='contact'),
+
+
 ]
 
 # Servir arquivos de media em desenvolvimento

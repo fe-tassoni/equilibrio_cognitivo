@@ -1,10 +1,10 @@
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import ResultadoFDTForm
-from .models import FdtReferencia
-from pacientes.models import Paciente
-from datetime import date
+from .models import FdtReferencia, FdtResultados
+from django.http import HttpResponse
+from django.utils import timezone
 
 def calcular_idade(data_nascimento, data_referencia):
     return data_referencia.year - data_nascimento.year - (
@@ -40,9 +40,11 @@ def resultado_fdt_create(request):
     if request.method == 'POST':
         if form.is_valid():
             resultado = form.save(commit=False)
+            # Ajusta para o timezone local configurado no Django
+            resultado.data_resultado = timezone.localtime(timezone.now())
             paciente = form.cleaned_data['paciente']
-            idade = calcular_idade(paciente.data_nascimento, resultado.data_resultado.date())
             escolaridade = paciente.escolaridade
+            idade = calcular_idade(paciente.data_nascimento, resultado.data_resultado.date())
 
             fases_tempos = [
                 ('Leitura', 'Leitura'),
@@ -105,6 +107,20 @@ def resultado_fdt_create(request):
             resultado.save()
             messages.success(request, 'Resultado FDT cadastrado com sucesso!')
             return redirect('fdt_detail', pk=resultado.pk)
+        
+        else:
+            error_msgs = []
+            for field, errors in form.errors.items():
+                for error in errors:
+                    error_msgs.append(f"{field}: {error}")
+            messages.error(request, 'Erro ao cadastrar: ' + ' | '.join(error_msgs))
+
 
     context = {'form': form}
     return render(request, 'fdt/create.html', context)
+
+@login_required
+def resultado_fdt_detail(request, pk):
+    resultado = get_object_or_404(FdtResultados, pk=pk)
+    context = {'resultado': resultado}
+    return render(request, 'fdt/detail.html', context)

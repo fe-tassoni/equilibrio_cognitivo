@@ -122,39 +122,103 @@
                         </div>
                     </div>
                 </div>
-                {% comment %} <div class="col-md-4">
-                    <div class="card text-center h-100">
-                        <div class="card-body p-4">
-                            <div class="feature-icon">
-                                <i class="bi bi-clipboard-data"></i>
-                            </div>
-                            <h5 class="card-title">Meus Testes</h5>
-                            <p class="card-text">Visualize e gerencie todos os seus testes.</p>
-                            <a href="{% url 'fdt_list' %}" class="btn btn-primary">
-                                <i class="bi bi-list me-2"></i>Ver Testes
-                            </a>
-                        </div>
-                    </div>
-                </div> {% endcomment %}
             </div>
 
-            <!-- Recent Activity -->
-            <div class="row">
+            <!-- Filtro dinâmico -->
+            <div class="row mb-4">
+                <div class="col-12 col-md-6 mx-auto">
+                    <input type="text" id="filtro-nome" class="form-control form-control-lg text-center" placeholder="Filtrar por nome do paciente...">
+                </div>
+            </div>
+
+            <!-- Tabela de Pacientes -->
+            <div class="row mb-5">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0">
-                                <i class="bi bi-clock-history me-2"></i>Atividade Recente
-                            </h5>
+                            <h5 class="mb-0"><i class="bi bi-people me-2"></i>Pacientes Cadastrados</h5>
                         </div>
-                        <div class="card-body">
-                            <div class="text-center py-4">
-                                <i class="bi bi-inbox display-1 text-muted"></i>
-                                <h6 class="text-muted mt-3">Nenhuma atividade recente</h6>
-                                <p class="text-muted">Comece criando um novo teste ou cadastrando um paciente.</p>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0" id="tabela-pacientes">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Nome</th>
+                                            <th>Nascimento</th>
+                                            <th>Telefone</th>
+                                            <th>Observações</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for paciente in pacientes %}
+                                        <tr>
+                                            <td class="nome-paciente">{{ paciente.nome_completo }}</td>
+                                            <td>{{ paciente.data_nascimento|date:'d/m/Y' }}</td>
+                                            <td>{{ paciente.telefone|default:'-' }}</td>
+                                            <td>{{ paciente.observacoes|default:'-' }}</td>
+                                            <td>
+                                                <a href="{% url 'paciente_edit' paciente.id %}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-pencil"></i> Editar
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr><td colspan="5" class="text-center text-muted">Nenhum paciente cadastrado.</td></tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Tabela de Testes FDT -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-clipboard-data me-2"></i>Testes FDT Realizados</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0" id="tabela-testes">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Paciente</th>
+                                            <th>Data do Teste</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for resultado in resultados %}
+                                        <tr>
+                                            <td class="nome-paciente">{{ resultado.nome_paciente }}</td>
+                                            <td>{{ resultado.data_resultado|date:'d/m/Y H:i:s' }}</td>
+                                            <td>
+                                                <a href="{% url 'fdt_detail' resultado.pk %}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-search"></i> Ver Detalhes
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr><td colspan="3" class="text-center text-muted">Nenhum teste cadastrado.</td></tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botão Voltar à Dashboard -->
+            <div class="row">
+                <div class="col-12 text-center my-4">
+                    <a href="{% url 'home' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Voltar à Dashboard
+                    </a>
                 </div>
             </div>
         {% endif %}
@@ -164,13 +228,23 @@
 
 {% block extra_js %}
 <script>
-    // Add smooth scrolling and animations
+    // Filtro dinâmico para pacientes e testes
     document.addEventListener('DOMContentLoaded', function() {
-        // Add fade-in animation to cards
-        const cards = document.querySelectorAll('.card');
-        cards.forEach((card, index) => {
-            card.style.animationDelay = `${index * 0.1}s`;
-            card.classList.add('fade-in');
+        const filtro = document.getElementById('filtro-nome');
+        const linhasPacientes = document.querySelectorAll('#tabela-pacientes tbody tr');
+        const linhasTestes = document.querySelectorAll('#tabela-testes tbody tr');
+        filtro.addEventListener('input', function() {
+            const termo = filtro.value.toLowerCase();
+            // Pacientes
+            linhasPacientes.forEach(linha => {
+                const nome = linha.querySelector('.nome-paciente')?.textContent.toLowerCase() || '';
+                linha.style.display = nome.includes(termo) ? '' : 'none';
+            });
+            // Testes
+            linhasTestes.forEach(linha => {
+                const nome = linha.querySelector('.nome-paciente')?.textContent.toLowerCase() || '';
+                linha.style.display = nome.includes(termo) ? '' : 'none';
+            });
         });
     });
 </script>

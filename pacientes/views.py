@@ -48,14 +48,19 @@ def paciente_detail(request, pk):
 def paciente_edit(request, pk):
     """Edita um paciente existente"""
     paciente = get_object_or_404(Paciente, pk=pk, psicologo=request.user)
-    
     if request.method == 'POST':
-        # Implementar lógica de edição
-        messages.success(request, 'Paciente atualizado com sucesso!')
-        return redirect('paciente_detail', pk=pk)
-    
+        form = PacienteForm(request.POST, instance=paciente)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Paciente atualizado com sucesso!')
+            return redirect('paciente_detail', pk=pk)
+        else:
+            messages.error(request, 'Erro ao atualizar paciente. Verifique os campos.')
+    else:
+        form = PacienteForm(instance=paciente)
     context = {
         'paciente': paciente,
+        'form': form,
     }
     return render(request, 'pacientes/edit.html', context)
 
