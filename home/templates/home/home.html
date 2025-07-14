@@ -1,18 +1,252 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Bem-vindo</title>
-</head>
-<body>
-    <h1>Bem-vindo ao Equilíbrio Cognitivo</h1>
-    <p>Plataforma para correção de testes neuropsicológicos.</p>
+{% extends 'base.html' %}
 
-    <a href="{% url 'cadastro' %}">
-        <button>Cadastrar-se</button>
-    </a>
-    {% comment %} <a href="{% url 'login' %}"> {% endcomment %}
-        {% comment %} <button>Entrar</button> {% endcomment %}
-    {% comment %} </a> {% endcomment %}
-</body>
-</html>
+{% block title %}Bem-vindo - Equilíbrio Cognitivo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        {% if not user.is_authenticated %}
+            <!-- Hero Section for Non-authenticated Users -->
+            <div class="text-center text-white mb-5 fade-in">
+                <h1 class="display-4 fw-bold mb-4">
+                    Bem-vindo ao <span style="color: #06b6d4;">Equilíbrio Cognitivo</span>
+                </h1>
+                <p class="lead mb-5">
+                    Plataforma profissional para correção e análise de testes neuropsicológicos.<br>
+                    Simplifique seu trabalho com ferramentas modernas e precisas.
+                </p>
+                
+                <div class="row g-4 mb-5">
+                    <div class="col-md-4">
+                        <div class="feature-icon">
+                            <i class="bi bi-clipboard-data"></i>
+                        </div>
+                        <h5 class="text-white">Testes Automatizados</h5>
+                        <p class="text-white-50">Correção automática do FDT (Five Digits Test) com precisão e rapidez.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-icon">
+                            <i class="bi bi-graph-up"></i>
+                        </div>
+                        <h5 class="text-white">Análise Detalhada</h5>
+                        <p class="text-white-50">Relatórios completos com interpretação dos resultados e normas.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h5 class="text-white">Segurança Total</h5>
+                        <p class="text-white-50">Proteção completa dos dados dos pacientes conforme LGPD.</p>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                    <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-person-plus me-2"></i>Começar Agora
+                    </a>
+                    <a href="{% url 'account_login' %}" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Já tenho conta
+                    </a>
+                </div>
+            </div>
+
+            <!-- Features Cards -->
+            <div class="row g-4 mt-5">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <h5 class="card-title">Gestão de Pacientes</h5>
+                            <p class="card-text">
+                                Organize e gerencie os dados dos seus pacientes de forma segura e eficiente.
+                                Histórico completo de avaliações e resultados.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="bi bi-file-earmark-text"></i>
+                            </div>
+                            <h5 class="card-title">Relatórios Profissionais</h5>
+                            <p class="card-text">
+                                Gere relatórios detalhados e profissionais automaticamente.
+                                Exportação em PDF com gráficos e interpretações.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <!-- Dashboard for Authenticated Users -->
+            <div class="text-center text-white mb-5 fade-in">
+                <h1 class="display-5 fw-bold mb-3">
+                    Olá, {{ user.first_name|default:user.username }}! 👋
+                </h1>
+                <p class="lead mb-4">
+                    Bem-vindo de volta ao seu painel de controle.
+                </p>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body p-4">
+                            <div class="feature-icon">
+                                <i class="bi bi-plus-circle"></i>
+                            </div>
+                            <h5 class="card-title">Novo Teste FDT</h5>
+                            <p class="card-text">Inicie uma nova avaliação FDT para um paciente.</p>
+                            <a href="{% url 'fdt_create' %}" class="btn btn-primary">
+                                <i class="bi bi-plus me-2"></i>Criar Teste
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body p-4">
+                            <div class="feature-icon">
+                                <i class="bi bi-person-plus"></i>
+                            </div>
+                            <h5 class="card-title">Novo Paciente</h5>
+                            <p class="card-text">Cadastre um novo paciente no sistema.</p>
+                            <a href="{% url 'paciente_create' %}" class="btn btn-primary">
+                                <i class="bi bi-person-plus me-2"></i>Cadastrar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtro dinâmico -->
+            <div class="row mb-4">
+                <div class="col-12 col-md-6 mx-auto">
+                    <input type="text" id="filtro-nome" class="form-control form-control-lg text-center" placeholder="Filtrar por nome do paciente...">
+                </div>
+            </div>
+
+            <!-- Tabela de Pacientes -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-people me-2"></i>Pacientes Cadastrados</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0" id="tabela-pacientes">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Nome</th>
+                                            <th>Nascimento</th>
+                                            <th>Telefone</th>
+                                            <th>Observações</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for paciente in pacientes %}
+                                        <tr>
+                                            <td class="nome-paciente">{{ paciente.nome_completo }}</td>
+                                            <td>{{ paciente.data_nascimento|date:'d/m/Y' }}</td>
+                                            <td>{{ paciente.telefone|default:'-' }}</td>
+                                            <td>{{ paciente.observacoes|default:'-' }}</td>
+                                            <td>
+                                                <a href="{% url 'paciente_edit' paciente.id %}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-pencil"></i> Editar
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr><td colspan="5" class="text-center text-muted">Nenhum paciente cadastrado.</td></tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabela de Testes FDT -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-clipboard-data me-2"></i>Testes FDT Realizados</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0" id="tabela-testes">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Paciente</th>
+                                            <th>Data do Teste</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for resultado in resultados %}
+                                        <tr>
+                                            <td class="nome-paciente">{{ resultado.nome_paciente }}</td>
+                                            <td>{{ resultado.data_resultado|date:'d/m/Y H:i:s' }}</td>
+                                            <td>
+                                                <a href="{% url 'fdt_detail' resultado.pk %}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-search"></i> Ver Detalhes
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr><td colspan="3" class="text-center text-muted">Nenhum teste cadastrado.</td></tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botão Voltar à Dashboard -->
+            <div class="row">
+                <div class="col-12 text-center my-4">
+                    <a href="{% url 'home' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Voltar à Dashboard
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Filtro dinâmico para pacientes e testes
+    document.addEventListener('DOMContentLoaded', function() {
+        const filtro = document.getElementById('filtro-nome');
+        const linhasPacientes = document.querySelectorAll('#tabela-pacientes tbody tr');
+        const linhasTestes = document.querySelectorAll('#tabela-testes tbody tr');
+        filtro.addEventListener('input', function() {
+            const termo = filtro.value.toLowerCase();
+            // Pacientes
+            linhasPacientes.forEach(linha => {
+                const nome = linha.querySelector('.nome-paciente')?.textContent.toLowerCase() || '';
+                linha.style.display = nome.includes(termo) ? '' : 'none';
+            });
+            // Testes
+            linhasTestes.forEach(linha => {
+                const nome = linha.querySelector('.nome-paciente')?.textContent.toLowerCase() || '';
+                linha.style.display = nome.includes(termo) ? '' : 'none';
+            });
+        });
+    });
+</script>
+{% endblock %}
+

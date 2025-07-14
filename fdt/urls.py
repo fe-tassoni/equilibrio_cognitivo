@@ -1,5 +1,9 @@
 from django.urls import path
+from . import views
 
 urlpatterns = [
-    # Exemplo: path('', views.minha_view, name='nome_da_view'),
+    path("novo/", views.resultado_fdt_create, name="fdt_create"),
+    path("<int:pk>/", views.resultado_fdt_detail, name="fdt_detail"),
 ]
+
+

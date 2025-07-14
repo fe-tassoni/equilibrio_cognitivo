@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Novo Paciente - Equilíbrio Cognitivo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card fade-in">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-person-plus me-2"></i>Cadastrar Novo Paciente
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    {{ form.as_p }}
+
+                    <!-- Botões de Ação -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'paciente_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle me-2"></i>Cadastrar Paciente
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Informações sobre LGPD -->
+        <div class="card mt-4 border-info">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-shield-check me-2"></i>Proteção de Dados
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-0">
+                    <strong>Importante:</strong> Todos os dados dos pacientes são protegidos conforme a LGPD. 
+                    As informações são criptografadas e acessíveis apenas por você. 
+                    Mantenha sempre a confidencialidade dos dados de seus pacientes.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener(\'DOMContentLoaded\', function() {
+    // Calculate age automatically
+    const birthDateInput = document.querySelector(\'input[name="data_nascimento"]\');
+    const ageInput = document.getElementById(\'idade\');
+    
+    if (birthDateInput && ageInput) {
+        birthDateInput.addEventListener(\'change\', function() {
+            const birthDate = new Date(this.value);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            if (age >= 0 && age <= 150) {
+                ageInput.value = age + \' anos\';
+            } else {
+                ageInput.value = \'\';
+            }
+        });
+    }
+    
+    // Phone mask
+    const phoneInput = document.querySelector(\'input[name="telefone"]\');
+    if (phoneInput) {
+        phoneInput.addEventListener(\'input\', function() {
+            let value = this.value.replace(/\\D/g, \'\');
+            if (value.length <= 11) {
+                value = value.replace(/(\\d{2})(\\d{5})(\\d{4})/, \'($1) $2-$3\');
+                if (value.length < 14) {
+                    value = value.replace(/(\\d{2})(\\d{4})(\\d{4})/, \'($1) $2-$3\');
+                }
+                this.value = value;
+            }
+        });
+    }
+    
+    // Form validation
+    const form = document.querySelector(\'form\');
+    form.addEventListener(\'submit\', function(e) {
+        const submitBtn = form.querySelector(\'button[type="submit"]\');
+        submitBtn.innerHTML = \'<i class="bi bi-hourglass-split me-2"></i>Cadastrando...\';
+        submitBtn.disabled = true;
+    });
+    
+    // Required field validation
+    const requiredFields = form.querySelectorAll(\'[required]\');
+    requiredFields.forEach(field => {
+        field.addEventListener(\'blur\', function() {
+            if (!this.value.trim()) {
+                this.classList.add(\'is-invalid\');
+            } else {
+                this.classList.remove(\'is-invalid\');
+                this.classList.add(\'is-valid\');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
+

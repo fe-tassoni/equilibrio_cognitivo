@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Equilíbrio Cognitivo{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Welcome Section -->
+    <div class="col-12 mb-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h3 class="fw-bold mb-2">
+                            Bem-vindo, {{ user.first_name|default:user.username }}! 👋
+                        </h3>
+                        <p class="mb-0 opacity-75">
+                            Gerencie seus testes neuropsicológicos e pacientes de forma eficiente.
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="d-none d-md-block">
+                            <i class="bi bi-speedometer2" style="font-size: 3rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="feature-icon mx-auto mb-3" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    <i class="bi bi-people"></i>
+                </div>
+                <h4 class="fw-bold text-success">{{ total_pacientes }}</h4>
+                <p class="text-muted mb-3">Pacientes Cadastrados</p>
+                <a href="{% url 'paciente_create' %}" class="btn btn-outline-success btn-sm">
+                    <i class="bi bi-plus me-1"></i>Novo Paciente
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="feature-icon mx-auto mb-3" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                    <i class="bi bi-clipboard-data"></i>
+                </div>
+                <h4 class="fw-bold text-primary">{{ total_testes }}</h4>
+                <p class="text-muted mb-3">Testes Realizados</p>
+                <a href="{% url 'fdt_create' %}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-plus me-1"></i>Novo Teste
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="feature-icon mx-auto mb-3" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                    <i class="bi bi-graph-up"></i>
+                </div>
+                <h4 class="fw-bold text-warning">0</h4>
+                <p class="text-muted mb-3">Relatórios Gerados</p>
+                <a href="{% url 'fdt_list' %}" class="btn btn-outline-warning btn-sm">
+                    <i class="bi bi-eye me-1"></i>Ver Relatórios
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="col-lg-8 mb-4">
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">
+                    <i class="bi bi-lightning me-2"></i>Ações Rápidas
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <a href="{% url 'fdt_create' %}" class="btn btn-outline-primary w-100 p-3">
+                            <i class="bi bi-plus-circle fs-4 d-block mb-2"></i>
+                            <strong>Novo Teste FDT</strong>
+                            <small class="d-block text-muted">Iniciar nova avaliação</small>
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{% url 'paciente_create' %}" class="btn btn-outline-success w-100 p-3">
+                            <i class="bi bi-person-plus fs-4 d-block mb-2"></i>
+                            <strong>Cadastrar Paciente</strong>
+                            <small class="d-block text-muted">Adicionar novo paciente</small>
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{% url 'fdt_list' %}" class="btn btn-outline-info w-100 p-3">
+                            <i class="bi bi-list-ul fs-4 d-block mb-2"></i>
+                            <strong>Meus Testes</strong>
+                            <small class="d-block text-muted">Ver todos os testes</small>
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{% url 'profile' %}" class="btn btn-outline-secondary w-100 p-3">
+                            <i class="bi bi-gear fs-4 d-block mb-2"></i>
+                            <strong>Configurações</strong>
+                            <small class="d-block text-muted">Editar perfil</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">
+                    <i class="bi bi-clock-history me-2"></i>Atividade Recente
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if testes_recentes %}
+                    {% for teste in testes_recentes %}
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-shrink-0">
+                                <div class="bg-primary rounded-circle p-2">
+                                    <i class="bi bi-clipboard-data text-white"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">{{ teste.paciente.nome }}</h6>
+                                <small class="text-muted">{{ teste.data_criacao|date:"d/m/Y H:i" }}</small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-inbox display-4 text-muted"></i>
+                        <p class="text-muted mt-3 mb-0">Nenhuma atividade recente</p>
+                        <small class="text-muted">Comece criando um novo teste</small>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Tips and Help -->
+    <div class="col-12">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-lightbulb me-2"></i>Dicas para começar
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6 class="text-info">1. Cadastre seus pacientes</h6>
+                        <p class="small text-muted">
+                            Comece cadastrando os dados básicos dos seus pacientes para organizar melhor suas avaliações.
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-info">2. Realize testes FDT</h6>
+                        <p class="small text-muted">
+                            Use nossa ferramenta automatizada para aplicar e corrigir o Five Digits Test de forma rápida e precisa.
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-info">3. Gere relatórios</h6>
+                        <p class="small text-muted">
+                            Exporte relatórios profissionais em PDF com interpretações e gráficos para seus laudos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add hover effects to action cards
+    const actionCards = document.querySelectorAll('.btn-outline-primary, .btn-outline-success, .btn-outline-info, .btn-outline-secondary');
+    
+    actionCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.transition = 'all 0.3s ease';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+    
+    // Add animation to statistics cards
+    const statCards = document.querySelectorAll('.card h-100');
+    statCards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.classList.add('fade-in');
+    });
+});
+</script>
+{% endblock %}
+

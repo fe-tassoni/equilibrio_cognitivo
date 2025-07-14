@@ -1,16 +1,218 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Cadastro</title>
-</head>
-<body>
-    <h1>Cadastro de Usuário</h1>
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Cadastrar</button>
-    </form>
-</body>
-</html>
+{% block title %}Cadastro - Equilíbrio Cognitivo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card fade-in">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
+                    <h2 class="fw-bold text-primary">Criar sua conta</h2>
+                    <p class="text-muted">Junte-se à nossa plataforma profissional</p>
+                </div>
+
+                <!-- Social Signup Buttons -->
+                <div class="mb-4">
+                    <a href="{% url 'socialaccount_provider_login' 'google' %}" class="btn social-login-btn google-btn w-100">
+                        <i class="bi bi-google me-2"></i>Cadastrar com Google
+                    </a>
+                    <a href="{% url 'socialaccount_provider_login' 'facebook' %}" class="btn social-login-btn facebook-btn w-100">
+                        <i class="bi bi-facebook me-2"></i>Cadastrar com Facebook
+                    </a>
+                </div>
+
+                <div class="divider">
+                    <span>ou crie sua conta</span>
+                </div>
+
+                <!-- Signup Form -->
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                {{ form.first_name.label }}
+                            </label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.first_name.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                {{ form.last_name.label }}
+                            </label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.last_name.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">
+                            {{ form.username.label }}
+                        </label>
+                        {{ form.username }}
+                        <div class="form-text">
+                            Apenas letras, números e underscore. Mínimo 3 caracteres.
+                        </div>
+                        {% if form.username.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.username.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">
+                            {{ form.email.label }}
+                        </label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.email.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label">
+                                {{ form.password1.label }}
+                            </label>
+                            {{ form.password1 }}
+                            <div class="form-text">
+                                Mínimo 8 caracteres com maiúscula, minúscula e número.
+                            </div>
+                            {% if form.password1.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.password1.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label">
+                                {{ form.password2.label }}
+                            </label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.password2.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="form-check">
+                            {{ form.terms_accepted }}
+                            <label class="form-check-label" for="{{ form.terms_accepted.id_for_label }}">
+                                {{ form.terms_accepted.label }}
+                            </label>
+                        </div>
+                        {% if form.terms_accepted.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.terms_accepted.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors.0 }}
+                        </div>
+                    {% endif %}
+
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <i class="bi bi-person-plus me-2"></i>Criar Conta
+                    </button>
+                </form>
+
+                <div class="text-center">
+                    <p class="text-muted mb-0">
+                        Já tem uma conta? 
+                        <a href="{% url 'account_login' %}" class="text-decoration-none fw-semibold">
+                            Faça login aqui
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password strength indicator
+    const password1 = document.getElementById('{{ form.password1.id_for_label }}');
+    const password2 = document.getElementById('{{ form.password2.id_for_label }}');
+    
+    if (password1) {
+        password1.addEventListener('input', function() {
+            const password = this.value;
+            const strength = calculatePasswordStrength(password);
+            updatePasswordStrengthIndicator(this, strength);
+        });
+    }
+    
+    if (password2) {
+        password2.addEventListener('input', function() {
+            const password1Value = password1.value;
+            const password2Value = this.value;
+            
+            if (password2Value && password1Value !== password2Value) {
+                this.classList.add('is-invalid');
+                this.classList.remove('is-valid');
+            } else if (password2Value && password1Value === password2Value) {
+                this.classList.add('is-valid');
+                this.classList.remove('is-invalid');
+            } else {
+                this.classList.remove('is-invalid', 'is-valid');
+            }
+        });
+    }
+    
+    function calculatePasswordStrength(password) {
+        let strength = 0;
+        if (password.length >= 8) strength++;
+        if (/[a-z]/.test(password)) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
+        return strength;
+    }
+    
+    function updatePasswordStrengthIndicator(input, strength) {
+        input.classList.remove('is-invalid', 'is-valid');
+        
+        if (strength < 3) {
+            input.classList.add('is-invalid');
+        } else if (strength >= 4) {
+            input.classList.add('is-valid');
+        }
+    }
+    
+    // Form validation feedback
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Criando conta...';
+        submitBtn.disabled = true;
+    });
+});
+</script>
+{% endblock %}
+

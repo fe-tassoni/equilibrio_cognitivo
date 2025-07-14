@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Novo Resultado FDT - Equilíbrio Cognitivo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10"> <!-- Aumentei a largura para a tabela caber confortavelmente -->
+        <div class="card fade-in">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>Novo Resultado FDT</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <!-- CAMPOS GERAIS -->
+                    <div class="row mb-3">
+                        <div class="col-md-8">{{ form.paciente|as_crispy_field }}</div>
+                    </div>
+                    <!-- TABELAS DE RESULTADOS -->
+
+                    <!-- Processos Automáticos e Controlados (Tempo) -->
+                    <h5 class="mb-3 fw-normal">Processos Automáticos e Controlados</h5>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 25%;">Etapa</th>
+                                    <th style="width: 25%;">Tempo (s)</th>
+                                    <th style="width: 25%;">Percentil</th>
+                                    <th style="width: 25%;">Classificação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Leitura</td>
+                                    <td>{{ form.tempo_leitura }}</td>
+                                    <td><span id="leitura_tempo_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="leitura_tempo_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Contagem</td>
+                                    <td>{{ form.tempo_contagem }}</td>
+                                    <td><span id="contagem_tempo_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="contagem_tempo_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Escolha</td>
+                                    <td>{{ form.tempo_escolha }}</td>
+                                    <td><span id="escolha_tempo_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="escolha_tempo_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Alternância</td>
+                                    <td>{{ form.tempo_alternancia }}</td>
+                                    <td><span id="alternancia_tempo_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="alternancia_tempo_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Inibição</td>
+                                    <td>{{ form.tempo_inibicao }}</td>
+                                    <td><span id="inibicao_tempo_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="inibicao_tempo_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Flexibilidade</td>
+                                    <td>{{ form.tempo_flexibilidade }}</td>
+                                    <td><span id="flexibilidade_tempo_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="flexibilidade_tempo_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Contagem de Erros -->
+                    <h5 class="mb-3 fw-normal">Contagem de Erros</h5>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 25%;">Etapa</th>
+                                    <th style="width: 25%;">Erros</th>
+                                    <th style="width: 25%;">Percentil</th>
+                                    <th style="width: 25%;">Classificação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Leitura</td>
+                                    <td>{{ form.erro_leitura }}</td>
+                                    <td><span id="leitura_erro_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="leitura_erro_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Contagem</td>
+                                    <td>{{ form.erro_contagem }}</td>
+                                    <td><span id="contagem_erro_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="contagem_erro_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Escolha</td>
+                                    <td>{{ form.erro_escolha }}</td>
+                                    <td><span id="escolha_erro_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="escolha_erro_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Alternância</td>
+                                    <td>{{ form.erro_alternancia }}</td>
+                                    <td><span id="alternancia_erro_pc" class="text-muted fst-italic"></span></td>
+                                    <td><span id="alternancia_erro_class" class="text-muted fst-italic"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Botões de Ação -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-2"></i>Salvar Resultado
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function updateIndicesDerivados() {
+        // Pega os campos de tempo
+        const leitura = parseFloat(document.getElementById('id_tempo_leitura')?.value.replace(',', '.') || '');
+        const escolha = parseFloat(document.getElementById('id_tempo_escolha')?.value.replace(',', '.') || '');
+        const alternancia = parseFloat(document.getElementById('id_tempo_alternancia')?.value.replace(',', '.') || '');
+
+        // Calcula os índices derivados se os valores forem válidos
+        if (!isNaN(leitura) && !isNaN(escolha)) {
+            const inibicao = escolha - leitura;
+            const inibicaoField = document.getElementById('id_tempo_inibicao');
+            if (inibicaoField) inibicaoField.value = inibicao.toFixed(2);
+        }
+        if (!isNaN(leitura) && !isNaN(alternancia)) {
+            const flexibilidade = alternancia - leitura;
+            const flexibilidadeField = document.getElementById('id_tempo_flexibilidade');
+            if (flexibilidadeField) flexibilidadeField.value = flexibilidade.toFixed(2);
+        }
+    }
+
+    // Adiciona listeners aos campos relevantes
+    ['id_tempo_leitura', 'id_tempo_escolha', 'id_tempo_alternancia'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', updateIndicesDerivados);
+        }
+    });
+
+    // Atualiza ao carregar a página (caso já tenha valores)
+    updateIndicesDerivados();
+});
+</script>
+{% endblock %}
